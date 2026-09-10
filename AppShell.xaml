@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DoorX.AppShell" FlyoutBehavior="Flyout" Title="DoorX">
+    <ShellContent Route="Login" ContentTemplate="{DataTemplate local:LoginPage}" xmlns:local="clr-namespace:DoorX.Views" />
+    <FlyoutItem Title="خانه" Route="Home"><ShellContent ContentTemplate="{DataTemplate local:HomePage}" xmlns:local="clr-namespace:DoorX.Views" /></FlyoutItem>
+    <FlyoutItem Title="پروفایل" Route="Profile"><ShellContent ContentTemplate="{DataTemplate local:ProfilePage}" xmlns:local="clr-namespace:DoorX.Views" /></FlyoutItem>
+    <FlyoutItem Title="تنظیمات" Route="Settings"><ShellContent ContentTemplate="{DataTemplate local:SettingsPage}" xmlns:local="clr-namespace:DoorX.Views" /></FlyoutItem>
+    <FlyoutItem Title="لاگ‌ها" Route="Logs"><ShellContent ContentTemplate="{DataTemplate local:LogsPage}" xmlns:local="clr-namespace:DoorX.Views" /></FlyoutItem>
+    <FlyoutItem Title="مدیریت کاربران" Route="Users"><ShellContent ContentTemplate="{DataTemplate local:UsersPage}" xmlns:local="clr-namespace:DoorX.Views" /></FlyoutItem>
+    <FlyoutItem Title="امنیت سیستم" Route="Security"><ShellContent ContentTemplate="{DataTemplate local:SecurityPage}" xmlns:local="clr-namespace:DoorX.Views" /></FlyoutItem>
+    <FlyoutItem Title="تغییر رمز" Route="ChangePassword"><ShellContent ContentTemplate="{DataTemplate local:ChangePasswordPage}" xmlns:local="clr-namespace:DoorX.Views" /></FlyoutItem>
+</Shell>
