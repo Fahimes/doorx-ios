@@ -19,16 +19,20 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          npm install
-          npm install @capacitor/core @capacitor/cli @capacitor/ios
+          npm install --legacy-peer-deps
+          npm install --legacy-peer-deps @capacitor/core @capacitor/cli @capacitor/ios
 
       - name: Build Web App
         run: npm run build
 
       - name: Add & Sync iOS Platform
         run: |
-          npx cap add ios || true
+          if [ ! -d "ios" ]; then
+            npx cap add ios
+          fi
           npx cap sync ios
+          cd ios/App
+          pod install
 
       - name: Configure App Transport Security (Allow HTTP to 192.168.4.1)
         run: |
@@ -39,21 +43,23 @@ jobs:
             /usr/libexec/PlistBuddy -c "Add :NSAppTransportSecurity:NSAllowsLocalNetworking bool true" "$PLIST_PATH" || true
           fi
 
-      - name: Build iOS Archive & IPA
+      - name: Build iOS App Binary (Unsigned)
         run: |
           cd ios/App
           xcodebuild -workspace App.xcworkspace \
             -scheme App \
             -configuration Release \
-            -destination 'generic/platform=iOS' \
-            -archivePath build/DoorX.xcarchive \
+            -sdk iphoneos \
+            -derivedDataPath build \
             CODE_SIGNING_ALLOWED=NO \
-            archive
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            clean build
 
           mkdir -p build/ipa/Payload
-          cp -r build/DoorX.xcarchive/Products/Applications/App.app build/ipa/Payload/DoorX.app
+          cp -r build/Build/Products/Release-iphoneos/App.app build/ipa/Payload/DoorX.app
           cd build/ipa
-          zip -r DoorX.ipa Payload
+          zip -r -q DoorX.ipa Payload
 
       - name: Upload IPA to GitHub Artifacts
         uses: actions/upload-artifact@v4
