@@ -12,10 +12,28 @@ jobs:
       - name: Checkout Source Code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Detect and Normalize Project Root
+        run: |
+          echo "Checking directory structure..."
+          ls -la
+          if [ ! -f "package.json" ]; then
+            echo "package.json not in root, searching in subdirectories..."
+            PKG_PATH=$(find . -maxdepth 3 -name "package.json" -not -path "*/node_modules/*" | head -n 1)
+            if [ -n "$PKG_PATH" ]; then
+              DIR=$(dirname "$PKG_PATH")
+              echo "Found package.json in: $DIR. Moving files to root..."
+              shopt -s dotglob nullglob
+              mv "$DIR"/* .
+            else
+              echo "ERROR: package.json could not be found anywhere in this repository!"
+              exit 1
+            fi
+          fi
+
+      - name: Setup Node.js 22
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Install Dependencies
         run: |
@@ -32,7 +50,7 @@ jobs:
           fi
           npx cap sync ios
           cd ios/App
-          pod install
+          pod install --repo-update
 
       - name: Configure App Transport Security (Allow HTTP to 192.168.4.1)
         run: |
